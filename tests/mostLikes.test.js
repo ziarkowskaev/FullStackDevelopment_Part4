@@ -2,13 +2,13 @@ const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
 
-describe('best blog', () => {
+describe('author with the most likes', () => {
 
     //zero blogs
     const listWithZeroBlog = []
 
     test('of en empty list is empty object', () => {
-        const result = listHelper.bestBlog(listWithZeroBlog)
+        const result = listHelper.mostLikes(listWithZeroBlog)
         assert.deepStrictEqual(result, {})
       })
 
@@ -25,12 +25,8 @@ describe('best blog', () => {
     ]
   
     test('when list has only one blog, best blog is the only blog', () => {
-      const result = listHelper.bestBlog(listWithOneBlog)
-      assert.deepStrictEqual(result, {
-        title: 'Go To Statement Considered Harmful',
-        author: 'Edsger W. Dijkstra',
-        likes: 5
-      })
+      const result = listHelper.mostLikes(listWithOneBlog)
+      assert.deepStrictEqual(result, {author: 'Edsger W. Dijkstra', likes: 5})
     })
 
     //multiple blogs
@@ -86,11 +82,10 @@ describe('best blog', () => {
       ]
 
       test('of a bigger list is calculated right', () => {
-        const result = listHelper.bestBlog(blogs)
+        const result = listHelper.mostLikes(blogs)
         assert.deepStrictEqual(result, {
-            title: "Canonical string reduction",
             author: "Edsger W. Dijkstra",
-            likes: 12
+            likes: 17
           })
       })
   })

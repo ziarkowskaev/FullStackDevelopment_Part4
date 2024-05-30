@@ -11,7 +11,7 @@ const dummy = (blogs) => {
     return count 
   }
   
-  const bestBlog = (blogs) => {
+  const favouriteBlog = (blogs) => {
 
     if(blogs.length >0){
 
@@ -36,8 +36,65 @@ const dummy = (blogs) => {
     }
   }
 
+ 
+  
+  const mostBlogs = (blogs) => {
+
+    if(blogs.length >0){
+      const authorCounts = blogs.reduce((counter, blog) => {
+        if (counter[blog.author]) {
+          counter[blog.author].blogs += 1;
+        } else {
+          counter[blog.author] = { author: blog.author, blogs: 1 };
+        }
+        return counter;
+      }, {});
+      
+      const authorsObject = Object.values(authorCounts);
+      
+      const mostBlogsAuthor = authorsObject.reduce((max, author) => max.blogs > author.blogs ? max : author);
+      
+      return mostBlogsAuthor
+
+    }else{
+
+      return {}
+
+    }
+    
+  }
+
+  const mostLikes = (blogs) => {
+
+    if(blogs.length >0){
+
+      const authorCounts = blogs.reduce((counter, blog) => {
+        if (counter[blog.author]) {
+          counter[blog.author].likes += blog.likes;
+        } else {
+          counter[blog.author] = { author: blog.author, likes: blog.likes};
+        }
+        return counter;
+      }, {});
+      
+      const authorsObject = Object.values(authorCounts);
+      
+      const mostLikesBlogsAuthor = authorsObject.reduce((max, author) => max.likes > author.likes ? max : author);
+      
+      return mostLikesBlogsAuthor
+      
+    }else{
+
+      return {}
+
+    }
+    
+  }
+
   module.exports = {
     dummy,
     totalLikes,
-    bestBlog
+    favouriteBlog,
+    mostBlogs,
+    mostLikes
   }
