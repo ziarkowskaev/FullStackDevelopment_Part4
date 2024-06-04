@@ -1,4 +1,6 @@
 const logger = require('./logger')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -10,6 +12,29 @@ const requestLogger = (request, response, next) => {
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
+}
+
+const userExtractor = async (request, response, next) => {
+
+  const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+  
+    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
+ 
+    if (!decodedToken.id) {
+      response.status(401).json({ error: 'token invalid' });
+      
+    }else{
+      const user = await User.findById(decodedToken.id);
+      request.user = user; 
+      next();
+    }
+    
 }
 
 const errorHandler = (error, request, response, next) => {
@@ -32,10 +57,10 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-"User validation failed: username: Path `username` (`a`) is shorter than the minimum allowed length (3)."
 
 module.exports = {
   requestLogger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
+  userExtractor
 }
